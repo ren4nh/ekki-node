@@ -4,6 +4,7 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const LocalStrategy = require("passport-local");
 const secret = require("../../config/secret");
+const Op = require("sequelize").Op;
 
 // Create local strategy
 const localOptions = { usernameField: "username", failureFlash: true };
