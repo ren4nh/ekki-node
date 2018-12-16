@@ -1,6 +1,7 @@
 const jwt = require("jwt-simple");
 const User = require("../models").User;
 const secret = require("../../config/secret");
+const Op = require("sequelize").Op;
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
@@ -26,7 +27,7 @@ module.exports = {
         return res.status(400).send({ message: "Nome deve ser informado" });
       }
 
-      if (await User.findOne({ where: { email: username } })) {
+      if (await User.findOne({ where: { email: { [Op.eq]: username } } })) {
         return res.status(400).send({ message: "Email já em uso" });
       }
 

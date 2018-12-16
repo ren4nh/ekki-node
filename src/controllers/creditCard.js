@@ -1,4 +1,5 @@
 const CreditCard = require("../models").CreditCard;
+const Op = require("sequelize").Op;
 
 module.exports = {
   async save(req, res) {
@@ -44,7 +45,7 @@ module.exports = {
       res.json({ data: creditCard });
     } catch (err) {
       console.log(err);
-      res.status(400).send({ message: "Erro ao salvar" });
+      res.status(400).send({ message: "Erro ao salvar, tente novamente" });
     }
   },
   async update(req, res) {
@@ -91,7 +92,7 @@ module.exports = {
       await card.update(req.body);
       res.json({ data: card });
     } catch (err) {
-      res.status(500);
+      res.status(400).send({ message: "Erro ao salvar, tente novamente" });
     }
   },
   async findByUser(req, res) {
@@ -99,11 +100,11 @@ module.exports = {
       const { user } = req;
 
       const cards = await CreditCard.findAll({
-        where: { UserId: user.get("id") }
+        where: { UserId: { [Op.eq]: user.get("id") } }
       });
       res.json({ data: cards });
     } catch (err) {
-      res.status(500);
+      res.status(400).send({ message: "Erro ao carregar, tenta novamente" });
     }
   },
   async delete(req, res) {
@@ -119,7 +120,7 @@ module.exports = {
       await card.destroy();
       res.json({ success: true });
     } catch (err) {
-      res.status(500);
+      res.status(400).send({ message: "Erro ao deletar, tente novamente" });
     }
   }
 };

@@ -25,7 +25,9 @@ module.exports = {
   async findUser(req, res) {
     try {
       const { username } = req.query;
-      const user = await User.findOne({ where: { email: username } });
+      const user = await User.findOne({
+        where: { email: { [Op.eq]: username } }
+      });
       if (!user) {
         return res.status(400).send({ message: "Usuário não encontrado" });
       }
@@ -39,7 +41,9 @@ module.exports = {
     try {
       const { username } = req.body;
 
-      const user = await User.findOne({ where: { email: username } });
+      const user = await User.findOne({
+        where: { email: { [Op.eq]: username } }
+      });
 
       if (!user) {
         return res.status(400).send({ message: "Usuário não encontrado" });
@@ -74,8 +78,12 @@ module.exports = {
         return res.status(400).send({ message: "Senha precisam ser iguais" });
       }
 
-      const myToken = await Token.findOne({ where: { token: token } });
-      const user = await User.findOne({ where: { email: username } });
+      const myToken = await Token.findOne({
+        where: { token: { [Op.eq]: token } }
+      });
+      const user = await User.findOne({
+        where: { email: { [Op.eq]: username } }
+      });
 
       if (!user) {
         return res.status(400).send({ message: "Usuário não encontrado" });

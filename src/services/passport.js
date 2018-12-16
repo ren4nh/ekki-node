@@ -13,7 +13,9 @@ const localLogin = new LocalStrategy(localOptions, async function(
   done
 ) {
   try {
-    const user = await User.findOne({ where: { email: username.trim() } });
+    const user = await User.findOne({
+      where: { email: { [Op.eq]: username.trim() } }
+    });
 
     if (!user) {
       return done(null, false);

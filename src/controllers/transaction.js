@@ -13,8 +13,8 @@ module.exports = {
       const transactions = await Transaction.findAll({
         where: {
           [Op.or]: [
-            { UserId: user.get("id") },
-            { DestinationId: user.get("id") }
+            { UserId: { [Op.eq]: user.get("id") } },
+            { DestinationId: { [Op.eq]: user.get("id") } }
           ]
         },
         include: [{ all: true }],
@@ -42,15 +42,17 @@ module.exports = {
         });
       }
 
-      const favorite = await User.findOne({ where: { email: destination } });
+      const favorite = await User.findOne({
+        where: { email: { [Op.eq]: destination } }
+      });
       if (!favorite) {
         return res.status(400).send({ message: "Favorecido não encontrado" });
       }
       const oldTransaction = await Transaction.findOne({
         where: {
-          DestinationId: favorite.get("id"),
-          UserId: user.get("id"),
-          amount: amount,
+          DestinationId: { [Op.eq]: favorite.get("id") },
+          UserId: { [Op.eq]: user.get("id") },
+          amount: { [Op.eq]: amount },
           createdAt: {
             [Op.between]: [
               moment()

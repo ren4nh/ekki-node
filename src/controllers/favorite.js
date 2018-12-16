@@ -1,5 +1,6 @@
 const Favorite = require("../models").Favorite;
 const User = require("../models").User;
+const Op = require("sequelize").Op;
 
 module.exports = {
   async save(req, res) {
@@ -14,7 +15,9 @@ module.exports = {
         return res.status(400).send({ message: "Descrição inválida" });
       }
 
-      const favorite = await User.findOne({ where: { email: email } });
+      const favorite = await User.findOne({
+        where: { email: { [Op.eq]: email } }
+      });
       if (!favorite) {
         return res.status(400).send({ message: "Favorecido não encontrado" });
       }
@@ -43,7 +46,9 @@ module.exports = {
         return res.status(400).send({ message: "Descrição inválida" });
       }
 
-      const favoriteUser = await User.findOne({ where: { email: email } });
+      const favoriteUser = await User.findOne({
+        where: { email: { [Op.eq]: email } }
+      });
       if (!favoriteUser) {
         return res.status(400).send({ message: "Favorecido não encontrado" });
       }
@@ -66,7 +71,7 @@ module.exports = {
       const { user } = req;
 
       const favorites = await Favorite.findAll({
-        where: { UserId: user.get("id") },
+        where: { UserId: { [Op.eq]: user.get("id") } },
         include: [{ all: true }],
         order: [["id", "ASC"]]
       });
